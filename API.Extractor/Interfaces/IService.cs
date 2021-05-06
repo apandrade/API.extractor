@@ -9,6 +9,6 @@ namespace API.Extractor.Interfaces
 {
     public interface IService
     {
-        public IResponseModel Process(IValueObject vo);
+        public Task<IResponseModel> Process(IValueObject vo);
     }
 }

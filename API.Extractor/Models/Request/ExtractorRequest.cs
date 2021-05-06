@@ -15,5 +15,19 @@ namespace API.Extractor.Models.Request
         {
             return createVo();
         }
+
+        public bool IsValid()
+        {
+            return ValidateUrl(Url);
+        }
+
+        private bool ValidateUrl(string url)
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri validatedUri))
+            {
+                return (validatedUri.Scheme == Uri.UriSchemeHttp || validatedUri.Scheme == Uri.UriSchemeHttps);
+            }
+            return false;
+        }
     }
 }

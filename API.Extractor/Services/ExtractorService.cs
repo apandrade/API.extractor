@@ -11,7 +11,7 @@ namespace API.Extractor.Services
 {
     public class ExtractorService : IService
     {
-        public IResponseModel Process(IValueObject vo)
+        public async Task<IResponseModel> Process(IValueObject vo)
         {
             IValueObject image = new Image("fake image", "fake image", 100, 100);
             IList<IValueObject> images = new List<IValueObject>();

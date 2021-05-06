@@ -8,6 +8,7 @@ namespace API.Extractor.Interfaces
 {
     public interface IRequestModel
     {
+        public bool IsValid();
         public IValueObject ConvertToVo(Func<IValueObject> createVo);
     }
 }
