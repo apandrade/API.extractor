@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
 
 namespace API.Extractor
 {
@@ -27,9 +28,24 @@ namespace API.Extractor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IService, ExtractorService>();
             services.AddControllers()
                 .AddNewtonsoftJson();
+            services.AddSingleton<IService, ExtractorService>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Extractor API",
+                        Version = "v1",
+                        Description = "A very simple text and images extractor",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "André Andrade",
+                            Url = new Uri("https://github.com/renatogroffe")
+                        }
+                    });
+            });                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,7 +55,10 @@ namespace API.Extractor
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Extractor API V1");
+            });
             app.UseHttpsRedirection();
 
             app.UseRouting();
