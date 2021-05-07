@@ -21,7 +21,7 @@ namespace API.Extractor.Models.Request
             return ValidateUrl(Url);
         }
 
-        private bool ValidateUrl(string url)
+        public bool ValidateUrl(string url)
         {
             if (Uri.TryCreate(url, UriKind.Absolute, out Uri validatedUri))
             {
