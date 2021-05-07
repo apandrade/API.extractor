@@ -1,3 +1,4 @@
+using API.Extractor.Extensions;
 using API.Extractor.Interfaces;
 using API.Extractor.Services;
 using Microsoft.AspNetCore.Builder;
@@ -33,7 +34,7 @@ namespace API.Extractor
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +51,8 @@ namespace API.Extractor
             {
                 endpoints.MapControllers();
             });
+
+            app.UseProblemDetailsExceptionHandler(loggerFactory);
         }
     }
 }
