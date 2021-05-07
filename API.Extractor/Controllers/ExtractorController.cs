@@ -40,9 +40,6 @@ namespace API.Extractor.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] ExtractorRequest model)
         {
-            if (!model.IsValid())
-                return BadRequest();
-
             _logger.LogInformation($"The url received is {model.Url}");
             IValueObject vo = model.ConvertToVo(() => new Website(model.Url));
             IResponseModel response = await _service.Process(vo);
