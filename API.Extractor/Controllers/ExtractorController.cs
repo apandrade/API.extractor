@@ -14,19 +14,34 @@ namespace API.Extractor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExtractController : BaseController
+    public class ExtractorController : BaseController
     {
 
-        public ExtractController(IService service, ILogger<ExtractController> logger):base(service,logger)
+        public ExtractorController(IService service, ILogger<ExtractorController> logger):base(service,logger)
         {
             
         }
 
+        /// <summary>
+        /// Extract all images and rankign top 10 most used words from a given URL
+        /// </summary>
+        /// /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Todo
+        ///     {
+        ///        "Url": "https://www.altudo.co",
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="url">Valid URL string</param>
+        /// <response code="400">If the URL is invalid</response>  
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] ExtractorRequest model)
         {
             if (!model.IsValid())
-                return BadRequest("Invalid URL");
+                return BadRequest();
 
             _logger.LogInformation($"The url received is {model.Url}");
             IValueObject vo = model.ConvertToVo(() => new Website(model.Url));
