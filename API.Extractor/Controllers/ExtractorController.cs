@@ -41,7 +41,7 @@ namespace API.Extractor.Controllers
         public async Task<IActionResult> Post([FromBody] ExtractorRequest model)
         {
             _logger.LogInformation($"The url received is {model.Url}");
-            IValueObject vo = model.ConvertToVo(() => new Website(model.Url));
+            IValueObject vo = model.ConvertToVo(() => new Website { Url = model.Url});
             IResponseModel response = await _service.Process(vo);
             return new JsonResult(response);
         }

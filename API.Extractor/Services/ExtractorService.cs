@@ -13,7 +13,12 @@ namespace API.Extractor.Services
     {
         public async Task<IResponseModel> Process(IValueObject vo)
         {
-            IValueObject image = new Image("fake image", "fake image", 100, 100);
+            IValueObject image = new Image {
+                Src= "fake image",
+                Alt = "fake image",
+                Width = 100,
+                Height =100
+            };
             IList<IValueObject> images = new List<IValueObject>();
             images.Add(image);
             return new ExtractorResponse(images);

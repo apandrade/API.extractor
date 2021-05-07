@@ -8,13 +8,6 @@ namespace API.Extractor.VO
 {
     public class Image : IValueObject
     {
-        public Image(string src, string alt, int width, int height)
-        {
-            Src = src;
-            Alt = alt;
-            Width = width;
-            Height = height;
-        }
         public string Src { get; set; }
         public string Alt { get; set; }
         public int Width { get; set; }

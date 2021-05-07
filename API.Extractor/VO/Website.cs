@@ -8,10 +8,6 @@ namespace API.Extractor.VO
 {
     public class Website : IValueObject
     {
-        public Website(string url)
-        {
-            Url = url;
-        }
-        string Url { get; set; }
+        public string Url { get; set; }
     }
 }
