@@ -32,6 +32,7 @@ namespace API.Extractor
             services.AddControllers()
                 .AddNewtonsoftJson();
             services.AddSingleton<IService, ExtractorService>();
+            services.ConfigureProblemDetailsModelState();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
@@ -56,6 +57,7 @@ namespace API.Extractor
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseProblemDetailsExceptionHandler(loggerFactory);
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Extractor API V1");
@@ -71,7 +73,7 @@ namespace API.Extractor
                 endpoints.MapControllers();
             });
 
-            app.UseProblemDetailsExceptionHandler(loggerFactory);
+
         }
     }
 }
