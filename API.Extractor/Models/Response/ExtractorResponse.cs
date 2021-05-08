@@ -6,10 +6,10 @@ namespace API.Extractor.Models.Response
 {
     public class ExtractorResponse : IModel, IResponseModel
     {
-        public ExtractorResponse(IList<ImageVO> images)
+        public ExtractorResponse(IList<IValueObject> images)
         {
             Images = images;
         }
-        public IList<ImageVO> Images { get; set; }
+        public IList<IValueObject> Images { get; set; }
     }
 }

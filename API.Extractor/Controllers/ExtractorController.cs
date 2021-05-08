@@ -41,7 +41,7 @@ namespace API.Extractor.Controllers
         {
             IValueObject vo = model.ConvertToVo(() => new WebsiteVO { Url = model.Url, Download = model.Download });
             _logger.LogInformation($"Processing URL: {model.Url}");
-            IResponseModel response = await _service.Process(vo, (result) => new ExtractorResponse((IList<ImageVO>)result));
+            IModel response = await _service.Process(vo, (result) => new ExtractorResponse((IList<IValueObject>)result));
             string jsonString = JsonConvert.SerializeObject(response);
             _logger.LogInformation($"Response: {jsonString}");
 

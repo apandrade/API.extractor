@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace API.Extractor.Helpers
 {
@@ -22,6 +23,13 @@ namespace API.Extractor.Helpers
         public static string GetUrlPath(string absoluteFilePath)
         {
             return absoluteFilePath.Replace(ServerHelper.WebRootPath, ServerHelper.AppBaseUrl).Replace('\\', '/');
+        }
+
+        public static string GetFileExtension(string url)
+        {
+            var urlPieces = url.Split('?');
+            string result = Path.GetExtension(urlPieces[0]);
+            return result ?? "";
         }
     }
 }
