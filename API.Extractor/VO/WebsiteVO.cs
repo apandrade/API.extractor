@@ -6,7 +6,7 @@ using API.Extractor.Interfaces;
 
 namespace API.Extractor.VO
 {
-    public class Website : IValueObject
+    public class WebsiteVO : IValueObject
     {
         public string Url { get; set; }
     }

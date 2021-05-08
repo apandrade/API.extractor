@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Extractor
 {
@@ -31,6 +33,7 @@ namespace API.Extractor
         {
             services.AddControllers()
                 .AddNewtonsoftJson();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IService, ExtractorService>();
             services.ConfigureProblemDetailsModelState();
             services.AddSwaggerGen(c =>
@@ -57,6 +60,7 @@ namespace API.Extractor
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHttpContext();
             app.UseProblemDetailsExceptionHandler(loggerFactory);
             app.UseSwagger();
             app.UseSwaggerUI(c => {
@@ -68,12 +72,15 @@ namespace API.Extractor
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-
+            AppDomain.CurrentDomain.SetData("ContentRootPath", env.ContentRootPath);
+            AppDomain.CurrentDomain.SetData("WebRootPath", env.WebRootPath);
         }
     }
 }
