@@ -36,8 +36,10 @@ namespace API.Extractor.Services
 
         private IList<ImageVO> GetAllImagesFullUrl(string url)
         {
-            var document = new HtmlWeb().Load(url);
-            var imgElements = document.DocumentNode.Descendants("img");
+
+            var web = new HtmlWeb();
+            var doc = web.Load(url);
+            var imgElements = doc.DocumentNode.Descendants("img");
 
             return  imgElements.Select(e => new ImageVO
             {
