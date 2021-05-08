@@ -11,6 +11,7 @@ namespace API.Extractor.WebCrawlers
     public class ChromeWebCrawler : IWebCrawler
     {
         public IWebDriver Driver { get; private set; }
+        private string _symbolsAndNumbers = "/?:;][}{~^´`.,ª=§+-_)(*&¨%¢¬$£#³@¹!\'\"²1234567890\\|";
         public ChromeWebCrawler()
         {
             SetUp();
@@ -46,7 +47,7 @@ namespace API.Extractor.WebCrawlers
             foreach (var word in wordList)
             {
                 var key = word.Trim();
-                if (String.IsNullOrEmpty(key.Trim()) || String.IsNullOrWhiteSpace(key.Trim()))
+                if (String.IsNullOrEmpty(key.Trim()) || String.IsNullOrWhiteSpace(key.Trim()) || _symbolsAndNumbers.Contains(key))
                     continue;
 
                 wordCount.TryGetValue(key,out currentCount);
