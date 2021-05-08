@@ -1,11 +1,7 @@
-﻿using API.Extractor.VO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Extractor.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using API.Extractor.Interfaces;
 using API.Extractor.Validators;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Extractor.Models.Request
 {

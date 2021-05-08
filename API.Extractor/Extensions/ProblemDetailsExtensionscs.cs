@@ -5,18 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Extractor.Extensions
 {
-	public static class ProblemDetailsExtensions
-	{
-		public static void UseProblemDetailsExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory)
-		{
+    public static class ProblemDetailsExtensions
+    {
+        public static void UseProblemDetailsExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory)
+        {
             app.UseExceptionHandler(builder =>
             {
                 builder.Run(async context =>
@@ -57,5 +52,5 @@ namespace API.Extractor.Extensions
                 });
             });
         }
-	}
+    }
 }

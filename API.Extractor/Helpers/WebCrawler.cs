@@ -1,11 +1,8 @@
 ﻿using API.Extractor.VO;
-using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Extractor.Helpers
 {
@@ -18,7 +15,7 @@ namespace API.Extractor.Helpers
         }
         public void SetUp()
         {
-            if(_driver == null)
+            if (_driver == null)
             {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.AddArgument("--headless");
@@ -39,11 +36,11 @@ namespace API.Extractor.Helpers
             IList<ImageVO> result = new List<ImageVO>();
             LoadPage(url);
             var images = _driver.FindElements(By.TagName("img"));
-            foreach (var image in images )
+            foreach (var image in images)
             {
                 var src = image.GetAttribute("src");
                 var alt = image.GetAttribute("alt");
-                if(!string.IsNullOrEmpty(src))
+                if (!string.IsNullOrEmpty(src))
                 {
                     result.Add(new ImageVO { Src = src, Alt = alt });
                 }

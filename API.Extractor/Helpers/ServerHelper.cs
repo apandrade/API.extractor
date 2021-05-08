@@ -1,10 +1,6 @@
-﻿using API.Extractor.Extensions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Extractor.Helpers
 {
@@ -35,7 +31,7 @@ namespace API.Extractor.Helpers
                 path);
         }
 
-        public  static string ContentRootPath { get => (string)AppDomain.CurrentDomain.GetData("ContentRootPath"); }
+        public static string ContentRootPath { get => (string)AppDomain.CurrentDomain.GetData("ContentRootPath"); }
         public static string WebRootPath { get => (string)AppDomain.CurrentDomain.GetData("WebRootPath"); }
     }
 }

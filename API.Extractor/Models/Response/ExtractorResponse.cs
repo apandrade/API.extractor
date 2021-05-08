@@ -1,9 +1,6 @@
-﻿using API.Extractor.VO;
-using System;
+﻿using API.Extractor.Interfaces;
+using API.Extractor.VO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Extractor.Interfaces;
 
 namespace API.Extractor.Models.Response
 {
