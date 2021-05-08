@@ -18,7 +18,7 @@ namespace API.Extractor.Extensions
 
         public static IApplicationBuilder UseHttpContext(this IApplicationBuilder app)
         {
-            ThisServer.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+            ServerHelper.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
             return app;
         }
     }

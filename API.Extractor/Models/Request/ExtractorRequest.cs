@@ -14,6 +14,9 @@ namespace API.Extractor.Models.Request
         [UrlValidator]
         [Required]
         public string Url { get; set; }
+        [Required]
+        public bool Download { get; set; }
+
 
         public IValueObject ConvertToVo(Func<IValueObject> createVo)
         {
