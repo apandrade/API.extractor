@@ -5,6 +5,7 @@ using API.Extractor.VO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +41,12 @@ namespace API.Extractor.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] ExtractorRequest model)
         {
-            _logger.LogInformation($"The url received is {model.Url}");
-            IValueObject vo = model.ConvertToVo(() => new WebsiteVO { Url = model.Url});
+            IValueObject vo = model.ConvertToVo(() => new WebsiteVO { Url = model.Url, Download = model.Download});
+            _logger.LogInformation($"Processing URL: {model.Url}");
             IResponseModel response = await _service.Process(vo, (result) => new ExtractorResponse((IList<ImageVO>)result));
+            string jsonString = JsonConvert.SerializeObject(response);
+            _logger.LogInformation($"Response: {jsonString}");
+
             return new JsonResult(response);
         }
     }

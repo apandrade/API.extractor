@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace API.Extractor.Helpers
 {
-    public class ThisServer
+    public class ServerHelper
     {
         private static IHttpContextAccessor m_httpContextAccessor;
 

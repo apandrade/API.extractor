@@ -9,7 +9,6 @@ using API.Extractor.VO;
 using System.Drawing;
 using System.Net;
 using System.IO;
-using HtmlAgilityPack;
 using API.Extractor.Helpers;
 using System.Drawing.Imaging;
 using Microsoft.AspNetCore.StaticFiles;
@@ -20,45 +19,48 @@ namespace API.Extractor.Services
 {
     public class ExtractorService : IService
     {
+        IList<string> _supportedImageTypes = new List<string> { ".png", ".jpg", ".jpeg", ".jfif", ".bmp", ".tiff", ".tif", ".gif"};
         public async Task<IResponseModel> Process(IValueObject vo, Func<object, IResponseModel> createResponse)
         {
-            IList<ImageVO> images = await ExtractAllImages(((WebsiteVO)vo).Url);
+            var websiteVO = (WebsiteVO)vo;
+            IList<ImageVO> images = await ExtractAllImages(websiteVO.Url, websiteVO.Download);
             return await Task.Run(() => createResponse(images));
         }
 
-        private async Task<IList<ImageVO>> ExtractAllImages(string url)
+        private async Task<IList<ImageVO>> ExtractAllImages(string url, bool mustDownload)
         {
-            ClearImagesDirectory();
-            IList<ImageVO> imagesList = GetAllImagesFullUrl(url);
-            var downloadImagesTask = Task.Run(() => DownloadAndSaveImages(imagesList));
-            return await downloadImagesTask;
+            var imageListTask = Task.Run(() => GetAllImagesFullUrl(url)); 
+
+            if(mustDownload)
+            {
+                IList<ImageVO> imageList = await imageListTask;
+                var downloadImagesTask = Task.Run(() => DownloadAndSaveImages(imageList));
+                return await downloadImagesTask;
+            }
+
+            return await imageListTask;
         }
 
         private IList<ImageVO> GetAllImagesFullUrl(string url)
         {
-
-            var web = new HtmlWeb();
-            var doc = web.Load(url);
-            var imgElements = doc.DocumentNode.Descendants("img");
-
-            return  imgElements.Select(e => new ImageVO
-            {
-                Src = SanitizeUrl(url, e.GetAttributeValue("src", "")),
-                Alt = e.GetAttributeValue("alt", "")
-            })
-            .Where(i => !String.IsNullOrEmpty(i.Src))
-            .ToList();
+            var crawler = new WebCrawler();
+            var result = crawler.GetAllImagesFromUrl(url);
+            crawler.Close();
+            return result;
         }
+
 
         private async Task<IList<ImageVO>> DownloadAndSaveImages(IList<ImageVO> images)
         {
-
+            ClearImagesDirectory();
             var downloadImageTask = Task.Run(() =>
             {
                 IList<ImageVO> result = new List<ImageVO>();
                 foreach (ImageVO imageVO in images)
                 {
-                    if(Path.HasExtension(imageVO.Src))
+
+                    string extension = GetFileExtension(imageVO.Src);
+                    if(IsSupportedFormat(extension))
                     {
                         ImageVO imageVOResult = imageVO.Clone();                    
                         imageVOResult.Src = DownloadAndSaveImageFromUrl(imageVO.Src);
@@ -69,43 +71,35 @@ namespace API.Extractor.Services
             });
             return await downloadImageTask;
         }
-
-        private string SanitizeUrl(string baseUrl, string imageUrl)
+        private bool IsSupportedFormat(string extension)
         {
-            baseUrl = baseUrl.TrimEnd('/');
-            if (!IsAbsoluteUrl(imageUrl))
+            bool result = false;
+            if(!String.IsNullOrEmpty(extension) && _supportedImageTypes.Contains(extension))
             {
-                imageUrl = imageUrl.TrimStart('/');
+                return true;
             }
-            return $"{baseUrl}/{imageUrl}";
+            return result;
         }
-        private bool IsAbsoluteUrl(string url)
+        private string GetFileExtension(string url)
         {
-            Uri result;
-            return Uri.TryCreate(url, UriKind.Absolute, out result);
+            var urlPieces = url.Split('?');
+            string result = Path.GetExtension(urlPieces[0]);
+            return result ?? "";
         }
-
         public string DownloadAndSaveImageFromUrl(string imageUrl)
         {
-            Image image = null;
-
             HttpWebRequest webRequest = (HttpWebRequest)HttpWebRequest.Create(imageUrl);
             webRequest.AllowWriteStreamBuffering = true;
             webRequest.Timeout = 30000;
             WebResponse webResponse = webRequest.GetResponse();
             Stream stream = webResponse.GetResponseStream();
-            image = Image.FromStream(stream);
+            Image image = Image.FromStream(stream);
             webResponse.Close();
 
-            string filePath = GetFilePath(Path.GetExtension(imageUrl));
+            string filePath = GetFilePath(GetFileExtension(imageUrl));
             image.Save(filePath);
-            string savedImageUrl = GetUrlPath(filePath);
+            string savedImageUrl = UrlHelper.GetUrlPath(filePath);
             return savedImageUrl;
-        }
-
-        private string GetUrlPath(string absoluteFilePath)
-        {
-            return absoluteFilePath.Replace(ThisServer.WebRootPath, ThisServer.AppBaseUrl).Replace('\\', '/');
         }
 
         private string GetFilePath(string extension)
@@ -123,7 +117,7 @@ namespace API.Extractor.Services
         private string GetImagesDirectory()
         {
             var imagePathName = Environment.GetEnvironmentVariable("IMAGES_PATH_NAME");
-            return ThisServer.MapWebRootPath($"{imagePathName}");
+            return ServerHelper.MapWebRootPath($"{imagePathName}");
         }
         private void ClearImagesDirectory()
         {
