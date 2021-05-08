@@ -10,6 +10,7 @@ namespace API.Extractor.Interfaces
     {
         public IWebDriver Driver { get; }
         public void SetUp();
-        public IList<IValueObject> GetList(string sourceUrl);
+        public IList<IValueObject> GetImageList(string sourceUrl);
+        public IList<IValueObject> GetWordList(string sourceUrl);
     }
 }

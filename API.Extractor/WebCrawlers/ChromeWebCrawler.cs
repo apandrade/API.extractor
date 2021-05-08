@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace API.Extractor.WebCrawlers
 {
@@ -32,7 +33,37 @@ namespace API.Extractor.WebCrawlers
             Driver.Navigate().GoToUrl(url);
         }
 
-        public IList<IValueObject> GetList(string url)
+        public IList<IValueObject> GetWordList(string url)
+        {
+            IList<IValueObject> result = new List<IValueObject>();
+            LoadPage(url);
+
+            var wholeText = Driver.FindElement(By.TagName("body")).Text.Trim();
+            Dictionary<string, int> wordCount = new Dictionary<string, int>();
+            var wordList = wholeText.Split(" ");
+
+            int currentCount;
+            foreach (var word in wordList)
+            {
+                var key = word.Trim();
+                if (String.IsNullOrEmpty(key.Trim()) || String.IsNullOrWhiteSpace(key.Trim()))
+                    continue;
+
+                wordCount.TryGetValue(key,out currentCount);
+                wordCount[key] = ++currentCount;
+            }
+
+            var top10 = wordCount.OrderByDescending(pair => pair.Value).Take(10);
+            foreach (KeyValuePair<string, int> entry in top10)
+            {
+                WordVO word = new WordVO { Word = entry.Key, Count = entry.Value };
+                result.Add(word);
+            }
+
+            return result;
+        }
+
+        public IList<IValueObject> GetImageList(string url)
         {
             IList<IValueObject> result = new List<IValueObject>();
             LoadPage(url);

@@ -20,11 +20,18 @@ namespace API.Extractor.Services
             WebCrawler = new ChromeWebCrawler();
             WebCrawler.SetUp();
         }
-        public async Task<IModel> Process(IValueObject vo, Func<object, IModel> createResponse)
+        public async Task<IModel> Process(IValueObject vo, Func<object,object, IModel> createResponse)
         {
             var websiteVO = (WebsiteVO)vo;
             IList<IValueObject> images = await ExtractAllImages(websiteVO.Url, websiteVO.Download);
-            return await Task.Run(() => createResponse(images));
+            IList<IValueObject> words = await ExtractMostUsedWords(websiteVO.Url);
+            return await Task.Run(() => createResponse(images, words));
+        }
+
+        private async Task<IList<IValueObject>> ExtractMostUsedWords(string url)
+        {
+            var wordListTask = Task.Run(() => WebCrawler.GetWordList(url));
+            return await wordListTask;
         }
 
         private async Task<IList<IValueObject>> ExtractAllImages(string url, bool mustDownload)
@@ -43,7 +50,7 @@ namespace API.Extractor.Services
 
         private IList<IValueObject> GetAllImagesFullUrl(string url)
         {
-            var result = WebCrawler.GetList(url);
+            var result = WebCrawler.GetImageList(url);
             return result;
         }
 
