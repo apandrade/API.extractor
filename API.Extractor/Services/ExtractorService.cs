@@ -19,7 +19,7 @@ namespace API.Extractor.Services
 {
     public class ExtractorService : IService
     {
-        IList<string> _supportedImageTypes = new List<string> { ".png", ".jpg", ".jpeg", ".jfif", ".bmp", ".tiff", ".tif", ".gif"};
+        IList<string> _supportedImageTypes = new List<string> { ".png", ".jpg", ".jpeg", ".jfif", ".exif", ".bmp", ".tiff", ".tif", ".gif"};
         public async Task<IResponseModel> Process(IValueObject vo, Func<object, IResponseModel> createResponse)
         {
             var websiteVO = (WebsiteVO)vo;
@@ -58,14 +58,12 @@ namespace API.Extractor.Services
                 IList<ImageVO> result = new List<ImageVO>();
                 foreach (ImageVO imageVO in images)
                 {
-
-                    string extension = GetFileExtension(imageVO.Src);
-                    if(IsSupportedFormat(extension))
+                    ImageVO imageVOResult = imageVO.Clone();
+                    imageVOResult.Src = DownloadAndSaveImageFromUrl(imageVO.Src);
+                    if(!String.IsNullOrEmpty(imageVOResult.Src))
                     {
-                        ImageVO imageVOResult = imageVO.Clone();                    
-                        imageVOResult.Src = DownloadAndSaveImageFromUrl(imageVO.Src);
-                        result.Add(imageVOResult);
-                    }                    
+                        result.Add(imageVOResult);                   
+                    }
                 }
                 return result;
             });
@@ -87,6 +85,43 @@ namespace API.Extractor.Services
             return result ?? "";
         }
         public string DownloadAndSaveImageFromUrl(string imageUrl)
+        {
+            string imageSavedUrl = "";
+            if(!imageUrl.StartsWith("data:image"))
+            {
+                string extension = GetFileExtension(imageUrl);
+                if (IsSupportedFormat(extension))
+                {
+                    imageSavedUrl = DownloadAndSaveImage(imageUrl);
+                }
+            }
+            else
+            {
+                imageSavedUrl = DownloadAndSaveBase64Image(imageUrl);
+            }
+
+            return imageSavedUrl;
+        }
+        private string DownloadAndSaveBase64Image(string base64String)
+        {
+            string imageSavedUrl = "";
+            string fileExtension = ImageHelper.GetExtensionFromBase64String(base64String);
+            string filePath = GetFilePath(fileExtension);
+            base64String = ImageHelper.SanitizeBase64String(base64String);            
+            byte[] bytes = Convert.FromBase64String(base64String);
+
+            Image image;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
+                image = Image.FromStream(ms);                
+                image.Save(filePath);
+                imageSavedUrl = UrlHelper.GetUrlPath(filePath);
+            }
+
+            return imageSavedUrl;
+        }
+
+        private string DownloadAndSaveImage(string imageUrl)
         {
             HttpWebRequest webRequest = (HttpWebRequest)HttpWebRequest.Create(imageUrl);
             webRequest.AllowWriteStreamBuffering = true;
