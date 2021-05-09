@@ -57,7 +57,7 @@ namespace API.Extractor.Services.WebCrawlers
                 wordCount[key] = ++currentCount;
             }
 
-            var top10 = wordCount.OrderByDescending(pair => pair.Value).Take(10);
+            var top10 = wordCount.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key).Take(10);
             foreach (KeyValuePair<string, int> entry in top10)
             {
                 WordVO word = new WordVO { Word = entry.Key, Count = entry.Value };
