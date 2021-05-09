@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,19 +52,23 @@ namespace API.Extractor.Helpers
 
         public static string DownloadAndSaveImage(string imageUrl)
         {
+            string fileExtension = UrlHelper.GetFileExtension(imageUrl);
+            string filePath = FileSystemHelper.GetFilePath(ImageDirectory, IMAGE_FILE_NAME_PREFIX, fileExtension);
+            string savedImageUrl = UrlHelper.GetUrlPath(filePath);
+
             HttpWebRequest webRequest = (HttpWebRequest)HttpWebRequest.Create(imageUrl);
             webRequest.AllowWriteStreamBuffering = true;
             webRequest.Timeout = 30000;
             WebResponse webResponse = webRequest.GetResponse();
-            Stream stream = webResponse.GetResponseStream();
-            Image image = Image.FromStream(stream);
-            webResponse.Close();
 
-            string fileExtension = UrlHelper.GetFileExtension(imageUrl);
-            string filePath = FileSystemHelper.GetFilePath(ImageDirectory, IMAGE_FILE_NAME_PREFIX, fileExtension);
-            image.Save(filePath);
-            string savedImageUrl = UrlHelper.GetUrlPath(filePath);
+            using (Stream stream = webResponse.GetResponseStream())
+            using (FileStream fs = File.Create(filePath))
+            {
+                stream.CopyTo(fs);
+            }
+
             return savedImageUrl;
         }
+
     }
 }
