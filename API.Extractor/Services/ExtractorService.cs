@@ -1,11 +1,7 @@
 ﻿using API.Extractor.Domain.Interfaces;
 using API.Extractor.Domain.VO;
-using API.Extractor.Services.WebCrawlers;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Extractor.Services
@@ -27,7 +23,7 @@ namespace API.Extractor.Services
             Name = "ExtractorService";
             _supportedImageTypes = new List<string> { ".png", ".jpg", ".jpeg", ".jfif", ".exif", ".bmp", ".tiff", ".tif", ".gif" };
         }
-        public async Task<IResponseModel> Process(IValueObject vo, Func<object,object, IResponseModel> createResponse)
+        public async Task<IResponseModel> Process(IValueObject vo, Func<object, object, IResponseModel> createResponse)
         {
             var websiteVO = (WebsiteVO)vo;
             IList<IValueObject> images = await ExtractAllImages(websiteVO.Url, websiteVO.Download);

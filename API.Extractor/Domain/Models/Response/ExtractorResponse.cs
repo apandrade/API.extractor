@@ -1,5 +1,4 @@
 ﻿using API.Extractor.Domain.Interfaces;
-using API.Extractor.Domain.VO;
 using System.Collections.Generic;
 
 namespace API.Extractor.Domain.Models.Response

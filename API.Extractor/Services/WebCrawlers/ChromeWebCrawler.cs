@@ -62,7 +62,7 @@ namespace API.Extractor.Services.WebCrawlers
                 if (key.Trim().Length < MinWordSize)
                     continue;
 
-                wordCount.TryGetValue(key,out currentCount);
+                wordCount.TryGetValue(key, out currentCount);
                 wordCount[key] = ++currentCount;
             }
 

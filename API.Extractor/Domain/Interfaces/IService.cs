@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace API.Extractor.Domain.Interfaces
+﻿namespace API.Extractor.Domain.Interfaces
 {
     public interface IService
     {

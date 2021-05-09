@@ -1,10 +1,6 @@
 ﻿using API.Extractor.Domain.Interfaces;
-using API.Extractor.Services;
-using Microsoft.AspNetCore.StaticFiles;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,11 +15,13 @@ namespace API.Extractor.Services
         }
         private const string IMAGE_FILE_NAME_PREFIX = "image_";
         public string Name { get; private set; }
-        public static string ImageDirectory { get 
+        public static string ImageDirectory
+        {
+            get
             {
                 var imagePathName = Environment.GetEnvironmentVariable("IMAGES_PATH_NAME");
                 return Path.Combine(WebRootPath, imagePathName);
-            } 
+            }
         }
         private static string WebRootPath { get => (string)AppDomain.CurrentDomain.GetData("WebRootPath"); }
 
