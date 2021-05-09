@@ -1,5 +1,6 @@
 ﻿using API.Extractor.Domain.Interfaces;
 using API.Extractor.Domain.VO;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace API.Extractor.Services
         IList<string> _supportedImageTypes;
         private IWebCrawler _webCrawler;
         private IImageService _imageService;
+
         public string Name { get; private set; }
-        public ExtractorService(IWebCrawler webCrawler, IImageService imageService)
+        public ExtractorService(IServiceProvider serviceProvider)
         {
-            _webCrawler = webCrawler;
-            _imageService = imageService;
+            _webCrawler = serviceProvider.GetRequiredService<IWebCrawler>();
+            _imageService = serviceProvider.GetRequiredService<IImageService>();
+
             Configure();
         }
         public void Configure()
