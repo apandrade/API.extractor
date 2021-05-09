@@ -1,8 +1,8 @@
-﻿using API.Extractor.Interfaces;
-using API.Extractor.VO;
+﻿using API.Extractor.Domain.Interfaces;
+using API.Extractor.Domain.VO;
 using System.Collections.Generic;
 
-namespace API.Extractor.Models.Response
+namespace API.Extractor.Domain.Models.Response
 {
     public class ExtractorResponse : IModel, IResponseModel
     {

@@ -1,4 +1,4 @@
-﻿namespace API.Extractor.Interfaces
+﻿namespace API.Extractor.Domain.Interfaces
 {
     public interface IValueObject
     {

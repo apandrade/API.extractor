@@ -1,4 +1,4 @@
-﻿using API.Extractor.Validators;
+﻿using API.Extractor.Domain.Validators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 

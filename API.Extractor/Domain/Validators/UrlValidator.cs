@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Extractor.Validators
+namespace API.Extractor.Domain.Validators
 {
     public class UrlValidator : ValidationAttribute
     {

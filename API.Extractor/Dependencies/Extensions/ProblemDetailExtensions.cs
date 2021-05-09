@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace API.Extractor.Extensions
+namespace API.Extractor.Dependencies.Extensions
 {
     public static class ProblemDetailExtensions
     {

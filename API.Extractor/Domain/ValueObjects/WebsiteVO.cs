@@ -1,6 +1,6 @@
-﻿using API.Extractor.Interfaces;
+﻿using API.Extractor.Domain.Interfaces;
 
-namespace API.Extractor.VO
+namespace API.Extractor.Domain.VO
 {
     public class WebsiteVO : IValueObject
     {

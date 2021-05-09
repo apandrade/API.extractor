@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace API.Extractor.Extensions
+namespace API.Extractor.Dependencies.Extensions
 {
     public static class ProblemDetailsExtensions
     {

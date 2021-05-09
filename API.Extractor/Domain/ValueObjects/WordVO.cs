@@ -1,10 +1,10 @@
-﻿using API.Extractor.Interfaces;
+﻿using API.Extractor.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Extractor.VO
+namespace API.Extractor.Domain.VO
 {
     public class WordVO : IValueObject
     {

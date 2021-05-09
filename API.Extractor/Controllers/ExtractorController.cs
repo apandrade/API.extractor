@@ -1,7 +1,7 @@
-﻿using API.Extractor.Interfaces;
-using API.Extractor.Models.Request;
-using API.Extractor.Models.Response;
-using API.Extractor.VO;
+﻿using API.Extractor.Domain.Interfaces;
+using API.Extractor.Domain.Models.Request;
+using API.Extractor.Domain.Models.Response;
+using API.Extractor.Domain.VO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ namespace API.Extractor.Controllers
     public class ExtractorController : BaseController
     {
 
-        public ExtractorController(IService service, ILogger<ExtractorController> logger) : base(service, logger)
+        public ExtractorController(IControllerService service, ILogger<ExtractorController> logger) : base(service, logger)
         {
 
         }
@@ -41,7 +41,7 @@ namespace API.Extractor.Controllers
         {
             IValueObject vo = model.ConvertToVo(() => new WebsiteVO { Url = model.Url, Download = model.Download });
             _logger.LogInformation($"Processing URL: {model.Url}");
-            IModel response = await _service.Process(vo, (imageList, wordList ) => 
+            IResponseModel response = await _service.Process(vo, (imageList, wordList ) => 
             new ExtractorResponse((IList<IValueObject>)imageList, (IList<IValueObject>)wordList));
 
             string jsonString = JsonConvert.SerializeObject(response);

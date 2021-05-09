@@ -1,23 +1,26 @@
-﻿using API.Extractor.Interfaces;
-using API.Extractor.VO;
+﻿using API.Extractor.Domain.Interfaces;
+using API.Extractor.Domain.VO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace API.Extractor.WebCrawlers
+namespace API.Extractor.Services.WebCrawlers
 {
     public class ChromeWebCrawler : IWebCrawler
     {
         public IWebDriver Driver { get; private set; }
         private string _symbolsAndNumbers = "/?:;][}{~^´`.,ª=§+-_)(*&¨%¢¬$£#³@¹!\'\"²1234567890\\|";
+
+        public string Name { get; private set; }
         public ChromeWebCrawler()
         {
-            SetUp();
+            Configure();
         }
-        public void SetUp()
+        public void Configure()
         {
+            Name = "ChromeWebCrawler";
             if (Driver == null)
             {
                 ChromeOptions chromeOptions = new ChromeOptions();

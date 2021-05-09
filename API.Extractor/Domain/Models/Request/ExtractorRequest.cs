@@ -1,9 +1,9 @@
-﻿using API.Extractor.Interfaces;
-using API.Extractor.Validators;
+﻿using API.Extractor.Domain.Interfaces;
+using API.Extractor.Domain.Validators;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Extractor.Models.Request
+namespace API.Extractor.Domain.Models.Request
 {
     public class ExtractorRequest : IModel, IRequestModel
     {
