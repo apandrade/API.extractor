@@ -1,4 +1,4 @@
-# Images extractor and top 10 mos used words counter
+# Images extractor and top 10 most used words counter
 
 This is a very simple Rest API which has the purpose of extract all images and to 10 most used words from a given URL by using .NET core 3.1 and Selenium with chrome webdriver.
 
