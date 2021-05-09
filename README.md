@@ -47,3 +47,7 @@ If download is true be aware that the server will replace all images each reques
     }
 
 You can also determine the minimum word size to be counted by setting MinWordSize in appsettings.json file
+
+## Online API Documentation
+
+https://apiextractor.azurewebsites.net/swagger/index.html
