@@ -1,5 +1,6 @@
 ﻿using API.Extractor.Domain.Interfaces;
 using API.Extractor.Domain.VO;
+using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -10,17 +11,22 @@ namespace API.Extractor.Services.WebCrawlers
 {
     public class ChromeWebCrawler : IWebCrawler
     {
+        readonly IConfiguration _configuration;
         public IWebDriver Driver { get; private set; }
         private string _symbolsAndNumbers = "/?:;][}{~^´`.,ª=§+-_)(*&¨%¢¬$£#³@¹!\'\"²1234567890\\|";
 
         public string Name { get; private set; }
-        public ChromeWebCrawler()
+        public int MinWordSize { get; private set; }
+        public ChromeWebCrawler(IConfiguration configuration)
         {
+            _configuration = configuration;
             Configure();
         }
         public void Configure()
         {
             Name = "ChromeWebCrawler";
+            Int32.TryParse(_configuration["MinWordSize"], out int minWordSize);
+            MinWordSize = minWordSize <= 0 ? 1 : minWordSize;
             if (Driver == null)
             {
                 ChromeOptions chromeOptions = new ChromeOptions();
@@ -32,7 +38,7 @@ namespace API.Extractor.Services.WebCrawlers
 
         private void LoadPage(string url)
         {
-            Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+            Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
             Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             Driver.Navigate().GoToUrl(url);
         }
@@ -51,6 +57,9 @@ namespace API.Extractor.Services.WebCrawlers
             {
                 var key = word.Trim();
                 if (String.IsNullOrEmpty(key.Trim()) || String.IsNullOrWhiteSpace(key.Trim()) || _symbolsAndNumbers.Contains(key))
+                    continue;
+
+                if (key.Trim().Length < MinWordSize)
                     continue;
 
                 wordCount.TryGetValue(key,out currentCount);

@@ -45,3 +45,5 @@ If download is true be aware that the server will replace all images each reques
         "Url": "https://giphy.com/gifs/brazil-PSKAppO2LH56w",
         "download": "true"
     }
+
+You can also determine the minimum word size to be counted by setting MinWordSize in appsettings.json file

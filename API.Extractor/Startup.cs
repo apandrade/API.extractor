@@ -28,6 +28,7 @@ namespace API.Extractor
         {
             services.AddControllers()
                 .AddNewtonsoftJson();
+            services.AddSingleton(Configuration);
             services.AddServiceDependency();
         }
 
