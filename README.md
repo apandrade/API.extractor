@@ -32,3 +32,15 @@ Now open your web browser and navigate to https://localhost:5001/swagger/index.h
 Open a window command prompt, navigate to the project root folder API.extractor and run
 
     dotnet test UnitTests
+
+## API Instructions
+There is just one post method on route
+
+    api/v1/extractor
+
+The payload expected is the json below where url is the website you want scraping and download is the boolean that indicates if the api should or not download all images for server, if download is false the api will returns the originals urls of images
+
+    {
+        "Url": "https://giphy.com/gifs/brazil-PSKAppO2LH56w",
+        "download": "true"
+    }
