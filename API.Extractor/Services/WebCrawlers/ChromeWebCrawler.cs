@@ -3,6 +3,7 @@ using API.Extractor.Domain.VO;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,6 @@ namespace API.Extractor.Services.WebCrawlers
         private void LoadPage(string url)
         {
             Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
-            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             Driver.Navigate().GoToUrl(url);
         }
 
@@ -48,6 +48,10 @@ namespace API.Extractor.Services.WebCrawlers
             IList<IValueObject> result = new List<IValueObject>();
             LoadPage(url);
 
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            IJavaScriptExecutor js = (IJavaScriptExecutor)Driver;
+            js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
             var wholeText = Driver.FindElement(By.TagName("body")).Text.Trim();
             Dictionary<string, int> wordCount = new Dictionary<string, int>();
             var wordList = wholeText.Split(" ");
