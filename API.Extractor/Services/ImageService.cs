@@ -29,20 +29,20 @@ namespace API.Extractor.Services
         {
             Name = "ImageService";
         }
-        private static string SanitizeBase64String(string base64)
+        public static string SanitizeBase64String(string base64)
         {
             var pieces = base64.Split(";base64,");
             return pieces.Count() == 2 ? pieces[1] : base64;
         }
 
-        private static string GetExtensionFromBase64String(string base64)
+        public static string GetExtensionFromBase64String(string base64)
         {
             var pieces = base64.Split(";");
             pieces = pieces[0].Split("/");
             return pieces.Count() == 2 ? $".{pieces[1]}" : "";
         }
 
-        public string DownloadAndSaveBase64Image(string base64String)
+        public string DownloadAndSaveBase64Image(string base64String, string baseUrl)
         {
             string imageSavedUrl = "";
             string fileExtension = GetExtensionFromBase64String(base64String);
@@ -55,17 +55,17 @@ namespace API.Extractor.Services
             {
                 image = Image.FromStream(ms);
                 image.Save(filePath);
-                imageSavedUrl = GetImageUrlFromAbsolutePath(filePath);
+                imageSavedUrl = GetImageUrlFromAbsolutePath(filePath, baseUrl);
             }
 
             return imageSavedUrl;
         }
 
-        public string DownloadAndSaveImage(string imageUrl)
+        public string DownloadAndSaveImage(string imageUrl, string baseUrl)
         {
             string fileExtension = GetFileExtension(imageUrl);
             string filePath = GetFilePath(fileExtension);
-            string savedImageUrl = GetImageUrlFromAbsolutePath(filePath);
+            string savedImageUrl = GetImageUrlFromAbsolutePath(filePath, baseUrl);
 
             HttpWebRequest webRequest = (HttpWebRequest)HttpWebRequest.Create(imageUrl);
             webRequest.AllowWriteStreamBuffering = true;
@@ -81,7 +81,7 @@ namespace API.Extractor.Services
             return savedImageUrl;
         }
 
-        private static string GetFilePath(string extension)
+        public static string GetFilePath(string extension)
         {
             var fullPath = "";
             do
@@ -109,9 +109,9 @@ namespace API.Extractor.Services
             return result ?? "";
         }
 
-        public static string GetImageUrlFromAbsolutePath(string absoluteFilePath)
+        public static string GetImageUrlFromAbsolutePath(string absoluteFilePath, string baseUrl)
         {
-            return absoluteFilePath.Replace(WebRootPath, ContextService.AppBaseUrl).Replace('\\', '/');
+            return absoluteFilePath.Replace(WebRootPath, baseUrl).Replace('\\', '/');
         }
     }
 }

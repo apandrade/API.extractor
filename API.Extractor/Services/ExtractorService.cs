@@ -97,12 +97,12 @@ namespace API.Extractor.Services
                 string extension = ImageService.GetFileExtension(imageUrl);
                 if (IsSupportedFormat(extension))
                 {
-                    imageSavedUrl = _imageService.DownloadAndSaveImage(imageUrl);
+                    imageSavedUrl = _imageService.DownloadAndSaveImage(imageUrl, ContextService.AppBaseUrl);
                 }
             }
             else
             {
-                imageSavedUrl = _imageService.DownloadAndSaveBase64Image(imageUrl);
+                imageSavedUrl = _imageService.DownloadAndSaveBase64Image(imageUrl, ContextService.AppBaseUrl);
             }
 
             return imageSavedUrl;

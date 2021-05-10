@@ -2,7 +2,7 @@
 {
     public interface IImageService : IService
     {
-        public string DownloadAndSaveBase64Image(string base64String);
-        public string DownloadAndSaveImage(string imageUrl);
+        public string DownloadAndSaveBase64Image(string base64String, string baseUrl);
+        public string DownloadAndSaveImage(string imageUrl, string baseUrl);
     }
 }
