@@ -17,8 +17,6 @@ namespace UnitTests.Services
         [TestInitialize]
         public void SetUp()
         {
-            //var root = "D:\\dev\\APOA\\API.Extractor\\API.Extractor\\wwwroot";
-            //D:\dev\APOA\API.Extractor\UnitTests\bin\Debug\netcoreapp3.1\
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             baseDirectory = baseDirectory.Replace("\\UnitTests\\bin\\Debug\\netcoreapp3.1\\", "");
             baseDirectory = $"{baseDirectory}\\API.Extractor\\wwwroot";
