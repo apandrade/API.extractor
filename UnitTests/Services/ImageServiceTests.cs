@@ -1,10 +1,8 @@
 ﻿using API.Extractor.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace UnitTests.Services
 {
@@ -70,7 +68,7 @@ namespace UnitTests.Services
         [TestMethod]
         public void Should_Return_File_Path()
         {
-            string savedUrl = ImageService.GetFilePath(_imageUrl);            
+            string savedUrl = ImageService.GetFilePath(_imageUrl);
             Assert.IsTrue(Path.IsPathRooted(savedUrl));
         }
 
@@ -88,7 +86,7 @@ namespace UnitTests.Services
             string extension = ImageService.GetFileExtension(_imageUrl);
             Assert.AreEqual(".jpg", extension);
         }
-        
+
         [TestMethod]
         public void Should__Return_A_Valid_URL()
         {

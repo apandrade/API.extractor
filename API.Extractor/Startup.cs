@@ -47,7 +47,7 @@ namespace API.Extractor
 
             app.UseHttpsRedirection();
 
-            
+
 
             app.UseAuthorization();
 
