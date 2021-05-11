@@ -47,11 +47,7 @@ namespace API.Extractor.Services.WebCrawlers
         {
             IList<IValueObject> result = new List<IValueObject>();
             LoadPage(url);
-
-            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
-            wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
-            IJavaScriptExecutor js = (IJavaScriptExecutor)Driver;
-            js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+            WaitAndScrollToBottom();
             var wholeText = Driver.FindElement(By.TagName("body")).Text.Trim();
             Dictionary<string, int> wordCount = new Dictionary<string, int>();
             var wordList = wholeText.Split(" ");
@@ -80,10 +76,20 @@ namespace API.Extractor.Services.WebCrawlers
             return result;
         }
 
+        private void WaitAndScrollToBottom()
+        {
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            IJavaScriptExecutor js = (IJavaScriptExecutor)Driver;
+            js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
+
+
         public IList<IValueObject> GetImageList(string url)
         {
             IList<IValueObject> result = new List<IValueObject>();
             LoadPage(url);
+            WaitAndScrollToBottom();
             var images = Driver.FindElements(By.TagName("img"));
             foreach (var image in images)
             {
