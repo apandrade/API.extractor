@@ -45,7 +45,6 @@ namespace API.Extractor.Dependencies
 
         public static IApplicationBuilder Configure(this IApplicationBuilder app)
         {
-            ContextService.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
 
             app.UseSwagger();
 

@@ -1,4 +1,5 @@
 ﻿using API.Extractor.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Drawing;
 using System.IO;
@@ -7,9 +8,9 @@ using System.Net;
 
 namespace API.Extractor.Services
 {
-    public class ImageService : IImageService
+    public class ImageService : BaseService, IImageService
     {
-        public ImageService()
+        public ImageService(IHttpContextAccessor contextAccessor): base(contextAccessor)
         {
             Configure();
         }
@@ -42,7 +43,7 @@ namespace API.Extractor.Services
             return pieces.Count() == 2 ? $".{pieces[1]}" : "";
         }
 
-        public string DownloadAndSaveBase64Image(string base64String, string baseUrl)
+        public string DownloadAndSaveBase64Image(string base64String, string appBaseUrl)
         {
             string imageSavedUrl = "";
             string fileExtension = GetExtensionFromBase64String(base64String);
@@ -55,17 +56,17 @@ namespace API.Extractor.Services
             {
                 image = Image.FromStream(ms);
                 image.Save(filePath);
-                imageSavedUrl = GetImageUrlFromAbsolutePath(filePath, baseUrl);
+                imageSavedUrl = GetImageUrlFromAbsolutePath(filePath, appBaseUrl);
             }
 
             return imageSavedUrl;
         }
 
-        public string DownloadAndSaveImage(string imageUrl, string baseUrl)
+        public string DownloadAndSaveImage(string imageUrl, string appBaseUrl)
         {
             string fileExtension = GetFileExtension(imageUrl);
             string filePath = GetFilePath(fileExtension);
-            string savedImageUrl = GetImageUrlFromAbsolutePath(filePath, baseUrl);
+            string savedImageUrl = GetImageUrlFromAbsolutePath(filePath, appBaseUrl);
 
             HttpWebRequest webRequest = (HttpWebRequest)HttpWebRequest.Create(imageUrl);
             webRequest.AllowWriteStreamBuffering = true;

@@ -1,5 +1,6 @@
 ﻿using API.Extractor.Domain.Interfaces;
 using API.Extractor.Domain.VO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace API.Extractor.Services
 {
-    public class ExtractorService : IControllerService
+    public class ExtractorService : BaseService,  IControllerService
     {
         IList<string> _supportedImageTypes;
         private IWebCrawler _webCrawler;
         private IImageService _imageService;
 
         public string Name { get; private set; }
-        public ExtractorService(IServiceProvider serviceProvider)
+        public ExtractorService(IServiceProvider serviceProvider, IHttpContextAccessor contextAccessor):base(contextAccessor)
         {
             _webCrawler = serviceProvider.GetRequiredService<IWebCrawler>();
             _imageService = serviceProvider.GetRequiredService<IImageService>();
@@ -97,12 +98,12 @@ namespace API.Extractor.Services
                 string extension = ImageService.GetFileExtension(imageUrl);
                 if (IsSupportedFormat(extension))
                 {
-                    imageSavedUrl = _imageService.DownloadAndSaveImage(imageUrl, ContextService.AppBaseUrl);
+                    imageSavedUrl = _imageService.DownloadAndSaveImage(imageUrl, AppBaseUrl);
                 }
             }
             else
             {
-                imageSavedUrl = _imageService.DownloadAndSaveBase64Image(imageUrl, ContextService.AppBaseUrl);
+                imageSavedUrl = _imageService.DownloadAndSaveBase64Image(imageUrl, AppBaseUrl);
             }
 
             return imageSavedUrl;
