@@ -1,16 +1,19 @@
 ﻿using API.Extractor.Domain.Interfaces;
 using API.Extractor.Domain.VO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Extractor.Services.WebCrawlers
 {
-    public class ChromeWebCrawler : IWebCrawler
+    public class ChromeWebCrawler : BaseService,  IWebCrawler
     {
         readonly IConfiguration _configuration;
         public IWebDriver Driver { get; private set; }
@@ -18,7 +21,7 @@ namespace API.Extractor.Services.WebCrawlers
 
         public string Name { get; private set; }
         public int MinWordSize { get; private set; }
-        public ChromeWebCrawler(IConfiguration configuration)
+        public ChromeWebCrawler(IConfiguration configuration, IHttpContextAccessor contextAccessor) : base(contextAccessor)
         {
             _configuration = configuration;
             Configure();
@@ -49,30 +52,33 @@ namespace API.Extractor.Services.WebCrawlers
             LoadPage(url);
             WaitAndScrollToBottom();
             var wholeText = Driver.FindElement(By.TagName("body")).Text.Trim();
-            Dictionary<string, int> wordCount = new Dictionary<string, int>();
+            //Dictionary<string, int> wordCount = new Dictionary<string, int>();
             var wordList = wholeText.Split(" ");
 
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+            ConcurrentDictionary<string, int> wordCount = new ConcurrentDictionary<string, int>();
             int currentCount;
-            foreach (var word in wordList)
+
+            Parallel.ForEach(wordList, parallelOptions, (word) =>
             {
                 var key = word.Trim();
-                if (String.IsNullOrEmpty(key.Trim()) || String.IsNullOrWhiteSpace(key.Trim()) || _symbolsAndNumbers.Contains(key))
-                    continue;
-
-                if (key.Trim().Length < MinWordSize)
-                    continue;
-
-                wordCount.TryGetValue(key, out currentCount);
-                wordCount[key] = ++currentCount;
-            }
+                if (key.Trim().Length < MinWordSize && 
+                (!String.IsNullOrEmpty(key.Trim()) || 
+                !String.IsNullOrWhiteSpace(key.Trim()) || 
+                !_symbolsAndNumbers.Contains(key)))
+                {
+                    wordCount.TryGetValue(key, out currentCount);
+                    wordCount[key] = ++currentCount;
+                }
+  
+            });
 
             var top10 = wordCount.OrderByDescending(pair => pair.Value).ThenBy(pair => pair.Key).Take(10);
-            foreach (KeyValuePair<string, int> entry in top10)
-            {
-                WordVO word = new WordVO { Word = entry.Key, Count = entry.Value };
-                result.Add(word);
-            }
-
+            result = top10.Select(x => new WordVO { Word = x.Key, Count = x.Value }).ToList<IValueObject>();           
             return result;
         }
 
@@ -90,8 +96,13 @@ namespace API.Extractor.Services.WebCrawlers
             IList<IValueObject> result = new List<IValueObject>();
             LoadPage(url);
             WaitAndScrollToBottom();
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
             var images = Driver.FindElements(By.TagName("img"));
-            foreach (var image in images)
+
+            Parallel.ForEach(images, parallelOptions, (image) =>
             {
                 var src = image.GetAttribute("src");
                 var alt = image.GetAttribute("alt");
@@ -99,7 +110,8 @@ namespace API.Extractor.Services.WebCrawlers
                 {
                     result.Add(new ImageVO { Src = src, Alt = alt });
                 }
-            }
+            });
+
             return result;
         }
 
