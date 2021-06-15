@@ -52,7 +52,6 @@ namespace API.Extractor.Services.WebCrawlers
             LoadPage(url);
             WaitAndScrollToBottom();
             var wholeText = Driver.FindElement(By.TagName("body")).Text.Trim();
-            //Dictionary<string, int> wordCount = new Dictionary<string, int>();
             var wordList = wholeText.Split(" ");
 
 
@@ -66,7 +65,7 @@ namespace API.Extractor.Services.WebCrawlers
             Parallel.ForEach(wordList, parallelOptions, (word) =>
             {
                 var key = word.Trim();
-                if (key.Trim().Length < MinWordSize && 
+                if (key.Trim().Length > MinWordSize && 
                 (!String.IsNullOrEmpty(key.Trim()) || 
                 !String.IsNullOrWhiteSpace(key.Trim()) || 
                 !_symbolsAndNumbers.Contains(key)))
